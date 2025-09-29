@@ -2,7 +2,7 @@ import axios, { AxiosError } from 'axios';
 import type { AxiosInstance, AxiosResponse } from 'axios';
 import type { ApiError } from '../types/task';
 
-// Use relative URL in development to leverage Vite proxy, absolute URL in production
+// Use relative URL in development to leverage proxy, absolute URL in production
 const isDevelopment = import.meta.env.DEV;
 const baseURL = isDevelopment 
   ? import.meta.env.VITE_TASKS_BASE_PATH || '/api/tasks'
@@ -19,7 +19,7 @@ export const http: AxiosInstance = axios.create({
 // Request interceptor
 http.interceptors.request.use(
   (config) => {
-    console.log(`Making ${config.method?.toUpperCase()} request to ${config.url}`);
+  // Request logging removed for production cleanup
     return config;
   },
   (error) => {
