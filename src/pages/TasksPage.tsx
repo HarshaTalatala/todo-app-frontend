@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Container,
@@ -11,12 +10,16 @@ import {
   Paper,
   Alert,
   Collapse,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from '@mui/material';
 import { Add, Refresh, Close } from '@mui/icons-material';
 import { useTasksQuery, usePingQuery } from '../hooks/useTasksQuery';
 import TaskList from '../components/TaskList';
 import Loader from '../components/Loader';
 import ErrorState from '../components/ErrorState';
+import TaskForm from '../components/TaskForm';
 
 type TabValue = 'all' | 'completed' | 'incompleted';
 
@@ -43,9 +46,9 @@ function TabPanel(props: TabPanelProps) {
 }
 
 export default function TasksPage() {
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabValue>('all');
   const [showConnectivityWarning, setShowConnectivityWarning] = useState(true);
+  const [addTaskOpen, setAddTaskOpen] = useState(false);
 
   const tasksQuery = useTasksQuery(activeTab);
   const pingQuery = usePingQuery();
@@ -55,7 +58,11 @@ export default function TasksPage() {
   };
 
   const handleAddTask = () => {
-    navigate('/tasks/new');
+    setAddTaskOpen(true);
+  };
+
+  const handleCloseAddTask = () => {
+    setAddTaskOpen(false);
   };
 
   const handleRefresh = () => {
@@ -109,9 +116,17 @@ export default function TasksPage() {
             variant="contained"
             startIcon={<Add />}
             onClick={handleAddTask}
+            sx={{ ml: 2 }}
           >
             Add Task
           </Button>
+          {/* Add Task Modal */}
+          <Dialog open={addTaskOpen} onClose={handleCloseAddTask} maxWidth="xs" fullWidth>
+            <DialogTitle>Add Task</DialogTitle>
+            <DialogContent>
+              <TaskForm onSubmit={() => {}} onCancel={handleCloseAddTask} />
+            </DialogContent>
+          </Dialog>
         </Box>
       </Box>
 

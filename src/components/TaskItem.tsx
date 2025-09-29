@@ -6,7 +6,6 @@ import {
   Checkbox,
   IconButton,
   Box,
-  Chip,
   Menu,
   MenuItem,
   ListItemIcon,
@@ -73,93 +72,62 @@ export default function TaskItem({ task }: TaskItemProps) {
     setDeleteDialogOpen(false);
   };
 
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
+  // Fallback for weird API response
+  const normalizedTask = {
+    id: task.id,
+    title: (typeof task.task === 'string' && task.task) ? task.task : (task.title ? task.title : 'Untitled Task'),
+    description: '',
+    completed: typeof task.completed === 'boolean' ? task.completed : false,
+    createdAt: task.createdAt,
+    updatedAt: task.updatedAt,
   };
 
   return (
     <>
       <Card
+        elevation={1}
         sx={{
-          mb: 2,
+          mb: 1,
           cursor: 'pointer',
-          transition: 'elevation 0.2s',
+          transition: 'elevation 0.2s, box-shadow 0.2s',
           '&:hover': {
-            elevation: 2,
+            elevation: 3,
+            boxShadow: 3,
           },
-          opacity: task.completed ? 0.7 : 1,
+          opacity: task.completed ? 0.8 : 1,
+          border: '1px solid',
+          borderColor: 'divider',
         }}
-        onClick={() => navigate(`/tasks/${task.id}`)}
       >
-        <CardContent>
-          <Box display="flex" alignItems="flex-start" gap={2}>
+        <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
+          <Box display="flex" alignItems="center" gap={1}>
             <Checkbox
-              checked={task.completed}
+              checked={normalizedTask.completed}
               onChange={handleToggleComplete}
               onClick={(e) => e.stopPropagation()}
               disabled={toggleTask.isPending}
+              size="small"
             />
-            
-            <Box flex={1} minWidth={0}>
+            <Box flex={1} minWidth={0} sx={{ width: '100%' }}>
               <Typography
-                variant="h6"
+                variant="subtitle1"
                 sx={{
-                  textDecoration: task.completed ? 'line-through' : 'none',
+                  textDecoration: normalizedTask.completed ? 'line-through' : 'none',
                   wordBreak: 'break-word',
+                  mb: 0,
+                  fontWeight: 500,
+                  fontSize: '1rem',
                 }}
               >
-                {task.title}
+                {normalizedTask.title}
               </Typography>
-              
-              {task.description && (
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{
-                    mt: 1,
-                    textDecoration: task.completed ? 'line-through' : 'none',
-                    display: '-webkit-box',
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                  }}
-                >
-                  {task.description}
-                </Typography>
-              )}
-              
-              <Box display="flex" alignItems="center" gap={1} mt={2}>
-                <Chip
-                  label={task.completed ? 'Completed' : 'In Progress'}
-                  color={task.completed ? 'success' : 'default'}
-                  size="small"
-                />
-                
-                {task.createdAt && (
-                  <Typography variant="caption" color="text.disabled">
-                    Created {formatDate(task.createdAt)}
-                  </Typography>
-                )}
-                
-                {task.updatedAt && task.updatedAt !== task.createdAt && (
-                  <Typography variant="caption" color="text.disabled">
-                    • Updated {formatDate(task.updatedAt)}
-                  </Typography>
-                )}
-              </Box>
             </Box>
-            
             <IconButton
               size="small"
               onClick={handleMenuOpen}
               disabled={deleteTask.isPending}
             >
-              <MoreVert />
+              <MoreVert fontSize="small" />
             </IconButton>
           </Box>
         </CardContent>

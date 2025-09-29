@@ -22,13 +22,12 @@ export default function TaskList({
 
   const filteredTasks = useMemo(() => {
     if (!searchQuery.trim()) return tasks;
-    
     const query = searchQuery.toLowerCase();
-    return tasks.filter(
-      (task) =>
-        task.title.toLowerCase().includes(query) ||
-        task.description?.toLowerCase().includes(query)
-    );
+    return tasks.filter((task) => {
+      const title = (typeof task.task === 'string' && task.task) || task.title || '';
+      const description = task.description || '';
+      return title.toLowerCase().includes(query) || description.toLowerCase().includes(query);
+    });
   }, [tasks, searchQuery]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {

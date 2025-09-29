@@ -17,7 +17,6 @@ import type { Task, TaskCreate, TaskUpdate } from '../types/task';
 
 const taskSchema = z.object({
   title: z.string().min(1, 'Title is required').max(200, 'Title is too long'),
-  description: z.string().max(1000, 'Description is too long').optional(),
   completed: z.boolean().optional(),
 });
 
@@ -48,7 +47,6 @@ export default function TaskForm({
     resolver: zodResolver(taskSchema),
     defaultValues: {
       title: task?.title || '',
-      description: task?.description || '',
       completed: task?.completed || false,
     },
     mode: 'onChange',
@@ -59,7 +57,6 @@ export default function TaskForm({
     if (task) {
       reset({
         title: task.title,
-        description: task.description || '',
         completed: task.completed,
       });
     }
@@ -70,14 +67,12 @@ export default function TaskForm({
       // For updates, only send changed fields
       const updates: TaskUpdate = {};
       if (data.title !== task?.title) updates.title = data.title;
-      if (data.description !== task?.description) updates.description = data.description;
       if (data.completed !== task?.completed) updates.completed = data.completed;
       onSubmit(updates);
     } else {
       // For creation, send all fields (except completed if false)
       const createData: TaskCreate = {
         title: data.title,
-        description: data.description || undefined,
         completed: data.completed || false,
       };
       onSubmit(createData);
@@ -85,7 +80,6 @@ export default function TaskForm({
   };
 
   const titleValue = watch('title');
-  const descriptionValue = watch('description');
 
   return (
     <Paper elevation={1} sx={{ p: 3 }}>
@@ -102,17 +96,6 @@ export default function TaskForm({
             error={!!errors.title}
             helperText={errors.title?.message}
             {...register('title')}
-            disabled={isLoading}
-          />
-
-          <TextField
-            label="Description"
-            fullWidth
-            multiline
-            rows={4}
-            error={!!errors.description}
-            helperText={errors.description?.message}
-            {...register('description')}
             disabled={isLoading}
           />
 
@@ -153,11 +136,6 @@ export default function TaskForm({
             <Typography variant="caption" display="block">
               Title: {titleValue?.length || 0}/200 characters
             </Typography>
-            {descriptionValue && (
-              <Typography variant="caption" display="block">
-                Description: {descriptionValue.length}/1000 characters
-              </Typography>
-            )}
           </Box>
         </Stack>
       </Box>

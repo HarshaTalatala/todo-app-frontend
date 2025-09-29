@@ -1,10 +1,17 @@
 export interface Task {
   id: number;
-  title: string;
+  title?: string;
   description?: string;
-  completed: boolean;
+  completed?: boolean;
   createdAt?: string;
   updatedAt?: string;
+  task?: {
+    title?: string;
+    description?: string;
+    completed?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+  };
 }
 
 export type TaskCreate = Omit<Task, 'id' | 'createdAt' | 'updatedAt'>;
