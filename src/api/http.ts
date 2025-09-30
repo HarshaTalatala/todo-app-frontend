@@ -67,7 +67,7 @@ http.interceptors.response.use(
         break;
       case 0:
       case undefined:
-        apiError.message = 'Network error - please check if the backend is running';
+        apiError.message = 'Network error - unable to connect to backend service. Please check your Azure deployment or API URL.';
         break;
     }
 
