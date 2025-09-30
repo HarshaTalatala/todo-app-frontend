@@ -35,7 +35,7 @@ export const tasksApi = {
 
   // POST /api/tasks - Create new task
   create: async (payload: TaskCreate): Promise<Task> => {
-    const response = await http.post<Task>('/', payload);
+  const response = await http.post<Task>('', payload);
     return response.data;
   },
 
