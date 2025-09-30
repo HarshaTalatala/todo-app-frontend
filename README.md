@@ -50,18 +50,22 @@ npm install
 
 ### 2. Configure Environment
 
-The application comes with default environment variables in `.env`:
+The application uses environment variables for backend API configuration:
 
+**Local Development:**
 ```env
 VITE_API_BASE_URL=http://localhost:8080
 VITE_TASKS_BASE_PATH=/api/tasks
 ```
 
-**Important**: Adjust `VITE_TASKS_BASE_PATH` based on your Spring Boot controller setup:
+**Production (Azure):**
+Create a file named `.env.production`:
+```env
+VITE_API_BASE_URL=https://todo-java-cabybkb3eycnchga.centralindia-01.azurewebsites.net
+VITE_TASKS_BASE_PATH=/api/tasks
+```
 
-- If your `TaskController` has `@RequestMapping("/tasks")` at class level: set to `/tasks`
-- If your `TaskController` has `@RequestMapping("/api/tasks")` at class level: set to `/api/tasks`
-- If no class-level mapping exists: set to `/api/tasks` (default)
+**Important**: Adjust `VITE_TASKS_BASE_PATH` based on your backend API path if needed.
 
 ### 3. Start the Development Server
 
@@ -73,8 +77,10 @@ The application will be available at `http://localhost:5173`
 
 ### 4. Backend Integration
 
-Ensure your Spring Boot application is running with the TaskController exposing these endpoints:
+Your backend should be deployed and accessible at:
+`https://todo-java-cabybkb3eycnchga.centralindia-01.azurewebsites.net/api/tasks`
 
+Endpoints required:
 - `GET /api/tasks/` - Get all tasks
 - `GET /api/tasks/completed` - Get completed tasks
 - `GET /api/tasks/incompleted` - Get incomplete tasks
@@ -85,6 +91,31 @@ Ensure your Spring Boot application is running with the TaskController exposing 
 - `GET /api/tasks/test` - Connectivity check
 
 ## 📁 Project Structure
+## 🚀 Azure Deployment
+
+### Deploy to Azure Static Web Apps
+
+1. **Build the app for production:**
+   ```bash
+   npm run build
+   ```
+   The output will be in the `dist/` folder.
+
+2. **Deploy using Azure Portal or Azure CLI:**
+   - In Azure Portal, create a Static Web App and connect your repo, or upload the `dist/` folder.
+   - For Azure CLI:
+     ```bash
+     az staticwebapp deploy --name <your-app-name> --source dist
+     ```
+
+3. **Configure environment variables in Azure:**
+   - Set `VITE_API_BASE_URL` to `https://todo-java-cabybkb3eycnchga.centralindia-01.azurewebsites.net`
+   - Set `VITE_TASKS_BASE_PATH` to `/api/tasks`
+
+### Deploy to Azure App Service (optional)
+If you use Azure App Service, upload the build output (`dist/`) and configure environment variables in the App Service settings.
+
+---
 
 ```
 src/
